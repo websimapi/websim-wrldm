@@ -9,7 +9,12 @@ document.addEventListener('DOMContentLoaded', async function() {
     // --- Start: Added logic to remove unwanted divs ---
     const cleanupBody = () => {
         Array.from(document.body.children).forEach(child => {
-            if (child.tagName === 'DIV' && child.id !== 'app-container') {
+            if (
+                child.tagName === 'DIV' && 
+                child.id !== 'app-container' &&
+                child.children.length === 0 && // Check if it's an empty container
+                child.style.zIndex === '999999' // Check for a common injected script style
+            ) {
                 child.remove();
             }
         });

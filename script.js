@@ -7,22 +7,18 @@ import { SidebarLoader } from './modules/sidebar-loader.js';
 
 document.addEventListener('DOMContentLoaded', async function() {
     // --- Start: Added logic to remove unwanted divs ---
-    const cleanupBody = () => {
-        Array.from(document.body.children).forEach(child => {
-            if (
-                child.tagName === 'DIV' && 
-                child.id !== 'app-container' &&
-                child.children.length === 0 && // Check if it's an empty container
-                child.style.zIndex === '999999' // Check for a common injected script style
-            ) {
-                child.remove();
-            }
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+                // If the added node is a DIV and not our main app container, remove it.
+                if (node.nodeType === Node.ELEMENT_NODE && node.tagName === 'DIV' && node.id !== 'app-container') {
+                    node.remove();
+                }
+            });
         });
-    };
-    
-    cleanupBody(); // Initial cleanup
+    });
 
-    const observer = new MutationObserver(cleanupBody);
+    // Start observing the body for added child nodes.
     observer.observe(document.body, { childList: true });
     // --- End: Added logic ---
 

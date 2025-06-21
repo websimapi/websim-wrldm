@@ -6,6 +6,21 @@ import { MenuManager } from './modules/menu-manager.js';
 import { SidebarLoader } from './modules/sidebar-loader.js';
 
 document.addEventListener('DOMContentLoaded', async function() {
+    // --- Start: Added logic to remove unwanted divs ---
+    const cleanupBody = () => {
+        Array.from(document.body.children).forEach(child => {
+            if (child.tagName === 'DIV' && child.id !== 'app-container') {
+                child.remove();
+            }
+        });
+    };
+    
+    cleanupBody(); // Initial cleanup
+
+    const observer = new MutationObserver(cleanupBody);
+    observer.observe(document.body, { childList: true });
+    // --- End: Added logic ---
+
     // Load sidebar component first
     await SidebarLoader.loadSidebar();
     
